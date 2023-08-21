@@ -1,19 +1,25 @@
 export class Router {
   constructor() {
     this.routes = [];
+    this.middlewares = [];
   }
 
   /**
-   * Adds a new route to the list of routes.
-   * @param {string} path - The path for the new route.
-   * @param {function} functionHandler - The function handler for the new route.
+   * Adds a middleware function to the list of middlewares.
+   *
+   * @param {string|function} path - The path for the middleware. If it is a function, it is treated as the handler and the path defaults to "/".
+   * @param {function} handler - The middleware function to be added.
    */
-  // use(path, functionHandler) {
-  //   this.routes.push({
-  //     path,
-  //     functionHandler,
-  //   });
-  // }
+  use(path, handler) {
+    if (typeof path === "function") {
+      handler = path;
+      path = "/";
+    }
+    this.middlewares.push({
+      path,
+      handler,
+    });
+  }
 
   /**
    * Adds a new route with a GET method to the route table.
@@ -91,16 +97,38 @@ export class Router {
    * @param {object} res - The response object.
    */
   handleRequest(req, res) {
-    const routes = this.routes.find(
-      (routes) => routes.method === req.method && routes.path === req.url
-    );
+    let index = 0;
 
-    if (routes) {
-      routes.handler(req, res);
-    } else {
-      res.statusCode = 404;
-      res.setHeader("Content-type", "application/json");
-      res.end(JSON.stringify({ message: "Route not found" }));
-    }
+    const next = (err) => {
+      if (err) {
+        res.statusCode = 500;
+        res.setHeader("Content-type", "application/json");
+        res.end(JSON.stringify({ message: err.message }));
+        return;
+      }
+
+      if (index < this.middlewares.length) {
+        const middleware = this.middlewares[index++];
+        if (req.url.startsWith(middleware.path)) {
+          middleware.handler(req, res, next);
+        } else {
+          next();
+        }
+      } else {
+        const route = this.routes.find(
+          (route) => route.method === req.method && route.path === req.url
+        );
+
+        if (route) {
+          route.handler(req, res);
+        } else {
+          res.statusCode = 404;
+          res.setHeader("Content-type", "application/json");
+          res.end(JSON.stringify({ message: "Route not found" }));
+        }
+      }
+    };
+
+    next();
   }
 }

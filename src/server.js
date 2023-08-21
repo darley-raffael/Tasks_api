@@ -1,7 +1,7 @@
+import { Router } from "./routes/Router.js";
 import { configDotenv } from "dotenv";
 import { env } from "node:process";
 import http from "node:http";
-import { Router } from "./routes/Router.js";
 
 configDotenv();
 
