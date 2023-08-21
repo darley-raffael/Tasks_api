@@ -14,7 +14,6 @@ router.get("/", (req, res) => {
   res.setHeader("Content-type", "application/json");
   res.end(JSON.stringify({ message: "raffa" }));
 });
-console.log(router.routes);
 
 const server = http.createServer((req, res) => {
   router.handleRequest(req, res);

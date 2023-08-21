@@ -49,11 +49,12 @@ export class Router {
     });
   }
 
-  /**
-   * Adds a new route with a PATCH method to the route table.
-   * @param {string} path - The path for the route.
+ 
+    /**
+   * Add a new route with the PATCH method.
+   *
+   * @param {string} path - The path of the route.
    * @param {function} handler - The handler function for the route.
-   * @return {void} This function does not return a value.
    */
   patch(path, handler) {
     this.routes.push({
