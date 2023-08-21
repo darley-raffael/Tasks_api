@@ -28,7 +28,7 @@ export class Router {
    * @return {void} This function does not return a value.
    */
   get(path, handler) {
-    this.routes.push({
+    return this.routes.push({
       method: "GET",
       path,
       handler,
@@ -42,22 +42,21 @@ export class Router {
    * @return {void} This function does not return a value.
    */
   post(path, handler) {
-    this.routes.push({
+    return this.routes.push({
       method: "POST",
       path,
       handler,
     });
   }
 
- 
-    /**
+  /**
    * Add a new route with the PATCH method.
    *
    * @param {string} path - The path of the route.
    * @param {function} handler - The handler function for the route.
    */
   patch(path, handler) {
-    this.routes.push({
+    return this.routes.push({
       method: "PATCH",
       path,
       handler,
@@ -71,7 +70,7 @@ export class Router {
    * @return {void} This function does not return a value.
    */
   put(path, handler) {
-    this.routes.push({
+    return this.routes.push({
       method: "PUT",
       path,
       handler,
@@ -84,7 +83,7 @@ export class Router {
    * @param {function} handler - The handler function of the route to be deleted.
    */
   delete(path, handler) {
-    this.routes.push({
+    return this.routes.push({
       method: "DELETE",
       path,
       handler,
