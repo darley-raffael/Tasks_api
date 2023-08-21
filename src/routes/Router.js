@@ -1,6 +1,5 @@
 export class Router {
   constructor() {
-    this.route = [];
     this.routes = [];
   }
 
@@ -9,12 +8,12 @@ export class Router {
    * @param {string} path - The path for the new route.
    * @param {function} functionHandler - The function handler for the new route.
    */
-  use(path, functionHandler) {
-    this.routes.push({
-      path,
-      functionHandler,
-    });
-  }
+  // use(path, functionHandler) {
+  //   this.routes.push({
+  //     path,
+  //     functionHandler,
+  //   });
+  // }
 
   /**
    * Adds a new route with a GET method to the route table.
@@ -23,7 +22,7 @@ export class Router {
    * @return {void} This function does not return a value.
    */
   get(path, handler) {
-    this.route.push({
+    this.routes.push({
       method: "GET",
       path,
       handler,
@@ -37,7 +36,7 @@ export class Router {
    * @return {void} This function does not return a value.
    */
   post(path, handler) {
-    this.route.push({
+    this.routes.push({
       method: "POST",
       path,
       handler,
@@ -51,7 +50,7 @@ export class Router {
    * @return {void} This function does not return a value.
    */
   patch(path, handler) {
-    this.route.push({
+    this.routes.push({
       method: "PATCH",
       path,
       handler,
@@ -65,7 +64,7 @@ export class Router {
    * @return {void} This function does not return a value.
    */
   put(path, handler) {
-    this.route.push({
+    this.routes.push({
       method: "PUT",
       path,
       handler,
@@ -78,7 +77,7 @@ export class Router {
    * @param {function} handler - The handler function of the route to be deleted.
    */
   delete(path, handler) {
-    this.route.push({
+    this.routes.push({
       method: "DELETE",
       path,
       handler,
@@ -92,12 +91,12 @@ export class Router {
    * @param {object} res - The response object.
    */
   handleRequest(req, res) {
-    const route = this.routes.find(
-      (route) => route.method === req.method && route.path === req.url
+    const routes = this.routes.find(
+      (routes) => routes.method === req.method && routes.path === req.url
     );
 
-    if (route) {
-      route.handler(req, res);
+    if (routes) {
+      routes.handler(req, res);
     } else {
       res.statusCode = 404;
       res.setHeader("Content-type", "application/json");
