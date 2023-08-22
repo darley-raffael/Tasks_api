@@ -1,24 +1,34 @@
 export class Router {
+  #routes;
+  #middlewares;
   constructor() {
-    this.routes = [];
-    this.middlewares = [];
+    this.#routes = [];
+    this.#middlewares = [];
   }
 
   /**
-   * Adds a middleware function to the list of middlewares.
+   * Get the routes.
    *
-   * @param {string|function} path - The path for the middleware. If it is a function, it is treated as the handler and the path defaults to "/".
-   * @param {function} handler - The middleware function to be added.
+   * @return {type} The routes.
    */
-  use(path, handler) {
-    if (typeof path === "function") {
-      handler = path;
-      path = "/";
+  get routes() {
+    return this.#routes;
+  }
+
+  /**
+   * Use the specified path and router to add routes to the list of routes.
+   *
+   * @param {string} path - The base path for the routes.
+   * @param {object} router - The router object containing the routes to be added.
+   */
+  use(path, router) {
+    for (const route of router.routes) {
+      this.#routes.push({
+        method: route.method,
+        path: path + route.path,
+        handler: route.handler,
+      });
     }
-    this.middlewares.push({
-      path,
-      handler,
-    });
   }
 
   /**
@@ -28,7 +38,7 @@ export class Router {
    * @return {void} This function does not return a value.
    */
   get(path, handler) {
-    return this.routes.push({
+    this.#routes.push({
       method: "GET",
       path,
       handler,
@@ -42,7 +52,7 @@ export class Router {
    * @return {void} This function does not return a value.
    */
   post(path, handler) {
-    return this.routes.push({
+    this.#routes.push({
       method: "POST",
       path,
       handler,
@@ -56,7 +66,7 @@ export class Router {
    * @param {function} handler - The handler function for the route.
    */
   patch(path, handler) {
-    return this.routes.push({
+    this.#routes.push({
       method: "PATCH",
       path,
       handler,
@@ -70,7 +80,7 @@ export class Router {
    * @return {void} This function does not return a value.
    */
   put(path, handler) {
-    return this.routes.push({
+    this.#routes.push({
       method: "PUT",
       path,
       handler,
@@ -83,7 +93,7 @@ export class Router {
    * @param {function} handler - The handler function of the route to be deleted.
    */
   delete(path, handler) {
-    return this.routes.push({
+    this.#routes.push({
       method: "DELETE",
       path,
       handler,
@@ -97,38 +107,21 @@ export class Router {
    * @param {object} res - The response object.
    */
   handleRequest(req, res) {
-    let index = 0;
+    // Normalize the URL
+    const normalizeUrl = req.url.endsWith("/") ? req.url.slice(0, -1) : req.url;
 
-    const next = (err) => {
-      if (err) {
-        res.statusCode = 500;
-        res.setHeader("Content-type", "application/json");
-        res.end(JSON.stringify({ message: err.message }));
-        return;
-      }
-
-      if (index < this.middlewares.length) {
-        const middleware = this.middlewares[index++];
-        if (req.url.startsWith(middleware.path)) {
-          middleware.handler(req, res, next);
-        } else {
-          next();
-        }
-      } else {
-        const route = this.routes.find(
-          (route) => route.method === req.method && route.path === req.url
-        );
-
-        if (route) {
-          route.handler(req, res);
-        } else {
-          res.statusCode = 404;
-          res.setHeader("Content-type", "application/json");
-          res.end(JSON.stringify({ message: "Route not found" }));
-        }
-      }
-    };
-
-    next();
+    // Find the route
+    const route = this.#routes.find(
+      (route) =>
+        route.method === req.method &&
+        route.path.replace(/\/$/, "") === normalizeUrl
+    );
+    if (route) {
+      route.handler(req, res);
+    } else {
+      res.statusCode = 404;
+      res.setHeader("Content-type", "application/json");
+      res.end(JSON.stringify({ message: "Route not found" }));
+    }
   }
 }
