@@ -19,7 +19,7 @@ export class TasksModel {
   }
 
   async show(table, params) {
-    if (!params) {
+    if (!params || Object.keys(params).length === 0) {
       const data = await database.select(table);
 
       return data;

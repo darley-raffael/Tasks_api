@@ -42,6 +42,7 @@ export class TasksController {
 
   async show(req, res) {
     const queryParams = queryString(req.url);
+    console.log(queryParams);
     const tasks = await taskModel.show("tasks", queryParams);
     res.statusCode = 200;
     res.setHeader("Content-type", "application/json");
