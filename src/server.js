@@ -1,12 +1,8 @@
-import { configDotenv } from "dotenv";
-import { env } from "node:process";
+import { environment } from "./utils/constants.js";
 import routes from "./routes/index.js";
 import http from "node:http";
 
-configDotenv();
-
-const HOST = env.HOSTNAME || "127.0.0.1";
-const PORT = env.PORT || 3000;
+const { HOST, PORT } = environment;
 
 const server = http.createServer((req, res) => {
   routes.handleRequest(req, res);

@@ -1,3 +1,8 @@
+import { queryString } from "../utils/query_string.js";
+import { environment } from "../utils/constants.js";
+
+const { HOST, PORT } = environment;
+
 export class Router {
   #routes;
   #middlewares;
@@ -107,14 +112,12 @@ export class Router {
    * @param {object} res - The response object.
    */
   handleRequest(req, res) {
-    // Normalize the URL
-    const normalizeUrl = req.url.endsWith("/") ? req.url.slice(0, -1) : req.url;
-
+    const reqUrl = new URL(req.url, `http://${HOST}:${PORT}`);
     // Find the route
     const route = this.#routes.find(
       (route) =>
         route.method === req.method &&
-        route.path.replace(/\/$/, "") === normalizeUrl
+        route.path.replace(/\/$/, "") === reqUrl.pathname
     );
     if (route) {
       route.handler(req, res);
