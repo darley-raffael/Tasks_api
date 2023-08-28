@@ -35,10 +35,11 @@ export class TasksController {
   async update(req, res) {
     const { id } = req.params;
     const { title, description } = req.body;
+    console.log("put", id);
+    console.log("body", req.body);
 
     if (!id || !title || !description) {
       res.statusCode = 400;
-      res.setHeader("Content-type", "application/json");
       res.end(JSON.stringify({ message: "All fields are required" }));
     }
 
@@ -47,7 +48,6 @@ export class TasksController {
       description,
     });
     res.statusCode = 200;
-    res.setHeader("Content-type", "application/json");
     res.end(JSON.stringify({ message: "Task updated", taskIndex }));
   }
 }

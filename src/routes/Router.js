@@ -119,6 +119,11 @@ export class Router {
       (route) => route.method === req.method && route.path.test(reqUrl.pathname)
     );
     if (route) {
+      const routeParams = req.url.match(route.path);
+      console.log(routeParams);
+      const { ...params } = routeParams.groups ? routeParams.groups : {};
+      req.params = params;
+      console.log(req.params);
       route.handler(req, res);
     } else {
       console.log("Route not found");
