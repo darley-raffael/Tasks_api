@@ -8,7 +8,11 @@ const { HOST, PORT } = environment;
 
 const server = http.createServer(async (req, res) => {
   await json(req, res);
-  req.params = params;
+
+  console.log(routes.routes.path);
+  const routeParams = req.url.match(routes.routes.path);
+  console.log("route", routeParams);
+
   req.query = (await queryString(req.url)) ?? {};
 
   routes.handleRequest(req, res);

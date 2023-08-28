@@ -81,7 +81,7 @@ export class Router {
 
   /**
    * Adds a new route with a PUT method to the route table.
-   * @param {string} path - The path for the route.
+   * @param {string} put - The path for the route.
    * @param {function} handler - The handler function for the route.
    * @return {void} This function does not return a value.
    */
@@ -113,17 +113,14 @@ export class Router {
    * @param {object} res - The response object.
    */
   handleRequest(req, res) {
+    console.log(this.#routes);
     const reqUrl = new URL(req.url, `http://${HOST}:${PORT}`);
     // Find the route
     const route = this.#routes.find(
       (route) => route.method === req.method && route.path.test(reqUrl.pathname)
     );
+    console.log(route.path);
     if (route) {
-      const routeParams = req.url.match(route.path);
-      console.log(routeParams);
-      const { ...params } = routeParams.groups ? routeParams.groups : {};
-      req.params = params;
-      console.log(req.params);
       route.handler(req, res);
     } else {
       console.log("Route not found");

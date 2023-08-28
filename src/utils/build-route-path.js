@@ -10,11 +10,12 @@ export function extractRouteParams(path) {
   const regexReplace = /(?<$1>[a-z0-9\-_]+)/;
 
   try {
+    console.log("path", path);
     const pathWithParams = path.replaceAll(routeParamsRegex, regexReplace);
     return new RegExp(`^${pathWithParams}`);
   } catch (e) {
     console.error(e);
-
+    console.log("executou o catch");
     return new RegExp(path);
   }
 
