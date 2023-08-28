@@ -42,10 +42,20 @@ export class TasksController {
 
   async show(req, res) {
     const queryParams = queryString(req.url);
-    console.log(queryParams);
     const tasks = await taskModel.show("tasks", queryParams);
     res.statusCode = 200;
     res.setHeader("Content-type", "application/json");
     res.end(JSON.stringify(tasks));
+  }
+
+  async update(req, res) {
+    const params = queryString(req.url);
+    console.log(params);
+
+    // const taskIndex = await taskModel.update("tasks", params.id);
+
+    // res.statusCode = 200;
+    // res.setHeader("Content-type", "application/json");
+    // res.end(JSON.stringify({ message: "Task updated", taskIndex }));
   }
 }

@@ -5,6 +5,7 @@ import http from "node:http";
 const { HOST, PORT } = environment;
 
 const server = http.createServer((req, res) => {
+  console.log(req.url.match(/^\/tasks\/(?<id>[a-z0-9\-_]+)\/?/));
   routes.handleRequest(req, res);
 });
 

@@ -11,6 +11,7 @@ export class TasksModel {
       created_at: new Date(),
       update_at: "",
       completed_at: null,
+      completed: false,
     };
 
     const data = await database.insert("tasks", task);
@@ -26,5 +27,10 @@ export class TasksModel {
     }
     const data = await database.select(table, params);
     return data;
+  }
+
+  async update(table, id, data) {
+    const taskIndex = database.update(table, id, data);
+    return taskIndex;
   }
 }

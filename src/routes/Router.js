@@ -1,5 +1,5 @@
-import { queryString } from "../utils/query_string.js";
 import { environment } from "../utils/constants.js";
+import { extractRouteParams } from "../utils/build-route-path.js";
 
 const { HOST, PORT } = environment;
 
@@ -30,7 +30,7 @@ export class Router {
     for (const route of router.routes) {
       this.#routes.push({
         method: route.method,
-        path: path + route.path,
+        path: extractRouteParams(path.concat(String(route.path))),
         handler: route.handler,
       });
     }
@@ -112,16 +112,20 @@ export class Router {
    * @param {object} res - The response object.
    */
   handleRequest(req, res) {
+    console.log(this.#routes);
     const reqUrl = new URL(req.url, `http://${HOST}:${PORT}`);
     // Find the route
     const route = this.#routes.find(
-      (route) =>
-        route.method === req.method &&
-        route.path.replace(/\/$/, "") === reqUrl.pathname
+      (route) => route.method === req.method && route.path.test(reqUrl.pathname)
     );
     if (route) {
+      const routeParams = extractRouteParams(route.path);
+      console.log(reqUrl);
+      console.log("routeParams:", routeParams.test(reqUrl.pathname));
+
       route.handler(req, res);
     } else {
+      console.log("Route not found");
       res.statusCode = 404;
       res.setHeader("Content-type", "application/json");
       res.end(JSON.stringify({ message: "Route not found" }));
