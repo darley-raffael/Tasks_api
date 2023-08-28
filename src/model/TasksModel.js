@@ -3,6 +3,13 @@ import { randomUUID } from "node:crypto";
 const database = new Database();
 
 export class TasksModel {
+  /**
+   * Creates a new task with the given title and description.
+   *
+   * @param {string} title - The title of the task.
+   * @param {string} description - The description of the task.
+   * @return {Promise} A promise that resolves with the newly created task data.
+   */
   async create(title, description) {
     const task = {
       id: randomUUID(),

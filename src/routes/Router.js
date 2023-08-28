@@ -30,7 +30,7 @@ export class Router {
     for (const route of router.routes) {
       this.#routes.push({
         method: route.method,
-        path: extractRouteParams(path.concat(String(route.path))),
+        path: extractRouteParams(path.concat(`${route.path}?`)),
         handler: route.handler,
       });
     }
@@ -112,17 +112,12 @@ export class Router {
    * @param {object} res - The response object.
    */
   handleRequest(req, res) {
-    console.log(this.#routes);
     const reqUrl = new URL(req.url, `http://${HOST}:${PORT}`);
     // Find the route
     const route = this.#routes.find(
       (route) => route.method === req.method && route.path.test(reqUrl.pathname)
     );
     if (route) {
-      const routeParams = extractRouteParams(route.path);
-      console.log(reqUrl);
-      console.log("routeParams:", routeParams.test(reqUrl.pathname));
-
       route.handler(req, res);
     } else {
       console.log("Route not found");

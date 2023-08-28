@@ -1,5 +1,4 @@
 import { TasksModel } from "../model/TasksModel.js";
-import { queryString } from "../utils/query_string.js";
 
 const taskModel = new TasksModel();
 
@@ -12,36 +11,20 @@ export class TasksController {
    * @return {void}
    */
   async create(req, res) {
-    let body = "";
-
-    req.setEncoding("utf-8");
-    req.on("data", (chunk) => {
-      body += chunk.toString();
-    });
-    req.on("end", async () => {
-      const data = JSON.parse(body);
-      const { title, description } = data;
-
-      if (!title || !description) {
-        res.statusCode = 400;
-        res.setHeader("Content-type", "application/json");
-        res.end(JSON.stringify({ message: "All fields are required" }));
-      } else {
-        res.statusCode = 201;
-        res.setHeader("Content-type", "application/json");
-        const task = await taskModel.create(title, description);
-        res.end(
-          JSON.stringify({
-            message: "Task created",
-            task: { id: task.id, title: task.title },
-          })
-        );
-      }
-    });
+    const { title, description } = req.body;
+    if (!title || !description) {
+      res.statusCode = 400;
+      res.setHeader("Content-type", "application/json");
+      res.end(JSON.stringify({ message: "All fields are required" }));
+    }
+    const task = await taskModel.create(title, description);
+    res.statusCode = 201;
+    res.setHeader("Content-type", "application/json");
+    res.end(JSON.stringify(task));
   }
 
   async show(req, res) {
-    const queryParams = queryString(req.url);
+    const { queryParams } = req.query;
     const tasks = await taskModel.show("tasks", queryParams);
     res.statusCode = 200;
     res.setHeader("Content-type", "application/json");
@@ -49,13 +32,21 @@ export class TasksController {
   }
 
   async update(req, res) {
-    const params = queryString(req.url);
-    console.log(params);
+    const { id } = req.params;
+    const { title, description } = req.body;
 
-    // const taskIndex = await taskModel.update("tasks", params.id);
+    if (!id || !title || !description) {
+      res.statusCode = 400;
+      res.setHeader("Content-type", "application/json");
+      res.end(JSON.stringify({ message: "All fields are required" }));
+    }
 
-    // res.statusCode = 200;
-    // res.setHeader("Content-type", "application/json");
-    // res.end(JSON.stringify({ message: "Task updated", taskIndex }));
+    const taskIndex = await taskModel.update("tasks", id, {
+      title,
+      description,
+    });
+    res.statusCode = 200;
+    res.setHeader("Content-type", "application/json");
+    res.end(JSON.stringify({ message: "Task updated", taskIndex }));
   }
 }

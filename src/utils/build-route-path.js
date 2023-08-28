@@ -1,7 +1,7 @@
 /**
  * Extracts route parameters from the given path.
  *
- * @param {string} path - The path containing route parameters.
+ * @param {string | RegExp} path - The path containing route parameters.
  * @return {RegExp} - A regular expression representing the path with route parameters replaced.
  */
 export function extractRouteParams(path) {
