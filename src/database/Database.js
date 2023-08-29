@@ -50,4 +50,13 @@ export class Database {
       this.#persist();
     }
   }
+
+  delete(table, id) {
+    const taskIndex = this.#database[table].findIndex((task) => task.id === id);
+
+    if (taskIndex > -1) {
+      this.#database[table].splice(taskIndex, 1);
+      this.#persist();
+    }
+  }
 }

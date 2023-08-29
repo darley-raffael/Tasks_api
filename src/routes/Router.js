@@ -122,6 +122,8 @@ export class Router {
         route.path.exec(url) &&
         route.path.exec(url)[0] === url
     );
+
+    return route;
   }
 
   /**
@@ -132,7 +134,7 @@ export class Router {
    */
   handleRequest(req, res, route) {
     if (route) {
-      console.log("rota valida");
+      console.log("Route valid");
       route.handler(req, res);
     } else {
       console.log("Route not found");

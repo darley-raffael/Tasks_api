@@ -45,4 +45,9 @@ export class TasksModel {
     const data = await database.select("tasks", { id });
     return data;
   }
+
+  async delete(table, id) {
+    const taskIndex = database.delete(table, id);
+    return taskIndex;
+  }
 }

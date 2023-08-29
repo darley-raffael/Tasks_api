@@ -35,19 +35,20 @@ export class TasksController {
   async update(req, res) {
     const { id } = req.params;
     const { title, description } = req.body;
+
+    if (!id || !title || !description) {
+      res.statusCode = 400;
+      res.end(JSON.stringify({ message: "All fields are required" }));
+      return;
+    }
+
     const task = await taskModel.getById(id);
 
-    console.log(task);
     if (!task || task.length === 0) {
       res.statusCode = 404;
       res.setHeader("Content-type", "application/json");
       res.end(JSON.stringify({ message: "Task not found" }));
       return;
-    }
-
-    if (!id || !title || !description) {
-      res.statusCode = 400;
-      res.end(JSON.stringify({ message: "All fields are required" }));
     }
 
     const taskIndex = await taskModel.update("tasks", id, {
@@ -60,5 +61,31 @@ export class TasksController {
     });
     res.statusCode = 200;
     res.end(JSON.stringify({ message: "Task updated", taskIndex }));
+  }
+
+  async delete(req, res) {
+    const { id } = req.params;
+    if (!id) {
+      res.statusCode = 400;
+      res.end(JSON.stringify({ message: "Task id is required" }));
+      return;
+    }
+
+    const searchTask = await taskModel.getById(id);
+
+    if (!searchTask || searchTask.length === 0) {
+      res.statusCode = 404;
+      res.setHeader("Content-type", "application/json");
+      res.end(JSON.stringify({ message: "Task not found" }));
+      return;
+    }
+    await taskModel.delete("tasks", id);
+    res.statusCode = 200;
+    res.setHeader("Content-type", "application/json");
+    res.end(
+      JSON.stringify({ message: "Task deleted", taskId: searchTask[0].id })
+    );
+
+    return searchTask;
   }
 }
