@@ -1,1 +1,21 @@
-{"tasks":[{"id":"444e4418-7ae2-4572-8617-c8fabeb358b2","title":"Iniciado DELETE","description":"Rota delete iniciada","created_at":"2023-08-29T12:09:47.591Z","updated_at":"2023-08-29T12:13:45.979Z","completed_at":null,"completed":false}]}
+{
+  "tasks": [
+    {
+      "id": "444e4418-7ae2-4572-8617-c8fabeb358b2",
+      "title": "Iniciado DELETE",
+      "description": "Rota delete iniciada",
+      "created_at": "2023-08-29T12:09:47.591Z",
+      "updated_at": "2023-08-29T12:13:45.979Z",
+      "completed_at": null,
+      "completed": false
+    },
+    {
+      "id": "c37bc4e0-5504-4090-98ca-3fb9a77961a2",
+      "title": "Rota de Atualizar status",
+      "description": "Criar rota de atualização de status para concuido",
+      "created_at": "2023-08-29T16:10:01.987Z",
+      "completed_at": "2023-08-29T16:12:39.082Z",
+      "completed": true
+    }
+  ]
+}

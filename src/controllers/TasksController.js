@@ -88,4 +88,39 @@ export class TasksController {
 
     return searchTask;
   }
+
+  async updateStatus(req, res) {
+    const { id } = req.params;
+    if (!id) {
+      res.statusCode = 400;
+      res.end(JSON.stringify({ message: "Task id is required" }));
+      return;
+    }
+
+    const searchTask = await taskModel.getById(id);
+
+    if (!searchTask || searchTask.length === 0) {
+      res.statusCode = 404;
+      res.setHeader("Content-type", "application/json");
+      res.end(JSON.stringify({ message: "Task not found" }));
+      return;
+    }
+
+    const { ...task } = searchTask[0];
+
+    await taskModel.update("tasks", id, {
+      title: task.title,
+      description: task.description,
+      created_at: task.created_at,
+      updated_at: task.updated_at === "" ? new Date() : task.updated_at,
+      completed_at: new Date(),
+      completed: !task.completed,
+    });
+
+    res.statusCode = 200;
+    res.setHeader("Content-type", "application/json");
+    res.end(JSON.stringify({ message: "Task updated", task }));
+
+    return task;
+  }
 }
