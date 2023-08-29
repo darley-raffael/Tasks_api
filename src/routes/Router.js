@@ -106,6 +106,14 @@ export class Router {
     });
   }
 
+  instanceRoutesServer(req, res) {
+    const reqUrl = new URL(req.url, `http://${HOST}:${PORT}`);
+
+    return this.#routes.find(
+      (route) => route.method === req.method && route.path.test(reqUrl.pathname)
+    );
+  }
+
   /**
    * Handles the request and sends the appropriate response based on the route.
    *
@@ -113,13 +121,7 @@ export class Router {
    * @param {object} res - The response object.
    */
   handleRequest(req, res) {
-    console.log(this.#routes);
-    const reqUrl = new URL(req.url, `http://${HOST}:${PORT}`);
-    // Find the route
-    const route = this.#routes.find(
-      (route) => route.method === req.method && route.path.test(reqUrl.pathname)
-    );
-    console.log(route.path);
+    const route = this.instanceRoutesServer(req, res);
     if (route) {
       route.handler(req, res);
     } else {

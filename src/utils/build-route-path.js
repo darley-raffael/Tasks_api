@@ -6,22 +6,14 @@
  */
 export function extractRouteParams(path) {
   const routeParamsRegex = /:([a-zA-Z]+)/g;
+  // Inclui a validação de UUID na variável regexReplace
+  const regexReplace =
+    "(?<$1>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})";
 
-  const regexReplace = /(?<$1>[a-z0-9\-_]+)/;
-
-  try {
-    console.log("path", path);
-    const pathWithParams = path.replaceAll(routeParamsRegex, regexReplace);
+  if (typeof path === "string") {
+    const pathWithParams = path.replace(routeParamsRegex, regexReplace);
     return new RegExp(`^${pathWithParams}`);
-  } catch (e) {
-    console.error(e);
-    console.log("executou o catch");
-    return new RegExp(path);
   }
 
-  // if (typeof path === "string") {
-  //   return new RegExp(`^${path.replaceAll(routeParamsRegex, regexReplace)}`);
-  // }
-
-  // return new RegExp(path);
+  return new RegExp(path);
 }
