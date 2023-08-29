@@ -31,7 +31,7 @@ export class Router {
     for (const route of router.routes) {
       this.#routes.push({
         method: route.method,
-        path: extractRouteParams(path.concat(`${route.path}?`)),
+        path: extractRouteParams(path.concat(route.path)),
         handler: route.handler,
       });
     }
@@ -106,12 +106,23 @@ export class Router {
     });
   }
 
-  instanceRoutesServer(req, res) {
+  /**
+   * Finds and returns the route that matches the request method and URL path.
+   *
+   * @param {object} req - The request object.
+   * @param {object} res - The response object.
+   * @return {object} The matching route object, or undefined if no match is found.
+   */
+  async instanceRoutesServer(req, res) {
     const reqUrl = new URL(req.url, `http://${HOST}:${PORT}`);
 
-    return this.#routes.find(
-      (route) => route.method === req.method && route.path.test(reqUrl.pathname)
+    const route = this.#routes.find(
+      (route) =>
+        route.method === req.method &&
+        route.path.exec(reqUrl.pathname)[0] === reqUrl.pathname
     );
+
+    return route;
   }
 
   /**
@@ -120,9 +131,9 @@ export class Router {
    * @param {object} req - The request object.
    * @param {object} res - The response object.
    */
-  handleRequest(req, res) {
-    const route = this.instanceRoutesServer(req, res);
+  handleRequest(req, res, route) {
     if (route) {
+      console.log("rota valida");
       route.handler(req, res);
     } else {
       console.log("Route not found");

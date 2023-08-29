@@ -40,4 +40,9 @@ export class TasksModel {
     const taskIndex = database.update(table, id, data);
     return taskIndex;
   }
+
+  async getById(id) {
+    const data = await database.select("tasks", { id });
+    return data;
+  }
 }

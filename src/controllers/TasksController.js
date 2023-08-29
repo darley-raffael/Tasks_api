@@ -35,8 +35,15 @@ export class TasksController {
   async update(req, res) {
     const { id } = req.params;
     const { title, description } = req.body;
-    console.log("put", id);
-    console.log("body", req.body);
+    const task = await taskModel.getById(id);
+
+    console.log(task);
+    if (!task || task.length === 0) {
+      res.statusCode = 404;
+      res.setHeader("Content-type", "application/json");
+      res.end(JSON.stringify({ message: "Task not found" }));
+      return;
+    }
 
     if (!id || !title || !description) {
       res.statusCode = 400;
@@ -46,6 +53,10 @@ export class TasksController {
     const taskIndex = await taskModel.update("tasks", id, {
       title,
       description,
+      created_at: task[0].created_at,
+      updated_at: new Date(),
+      completed_at: task[0].completed_at,
+      completed: task[0].completed,
     });
     res.statusCode = 200;
     res.end(JSON.stringify({ message: "Task updated", taskIndex }));
