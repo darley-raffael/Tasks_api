@@ -1,28 +1,3 @@
-// export class StatusHttpServer {
-//   #req;
-//   #res;
-//   constructor(req, res) {
-//     this.#req = req;
-//     this.#res = res;
-//   }
-//   /**
-//    * Sets the HTTP status code, sets the response header if provided, and sends a JSON response.
-//    *
-//    * @param {number} statusCode - The HTTP status code to be set.
-//    * @param {string | object} message - The message to be included in the JSON response.
-//    * @param {object} header - (optional) An object containing the name and value of the header to be set.
-//    * @return {void}
-//    */
-//   async statusHttp(statusCode, message, header) {
-//     this.#res.statusCode = statusCode;
-//     if (header) {
-//       this.#res.setHeader(header.name, header.value);
-//     }
-//     this.#res.setHeader("Content-type", "application/json");
-//     this.#res.end(JSON.stringify({ message }));
-//   }
-// }
-
 /**
  * Creates a function that sets the HTTP status code, headers, and response body.
  *
