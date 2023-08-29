@@ -31,7 +31,7 @@ export class Router {
     for (const route of router.routes) {
       this.#routes.push({
         method: route.method,
-        path: extractRouteParams(path.concat(route.path)),
+        path: extractRouteParams(path.concat(`${route.path}?`)),
         handler: route.handler,
       });
     }
@@ -114,15 +114,14 @@ export class Router {
    * @return {object} The matching route object, or undefined if no match is found.
    */
   async instanceRoutesServer(req, res) {
-    const reqUrl = new URL(req.url, `http://${HOST}:${PORT}`);
+    const { method, url } = req;
 
     const route = this.#routes.find(
       (route) =>
-        route.method === req.method &&
-        route.path.exec(reqUrl.pathname)[0] === reqUrl.pathname
+        route.method === method &&
+        route.path.exec(url) &&
+        route.path.exec(url)[0] === url
     );
-
-    return route;
   }
 
   /**
