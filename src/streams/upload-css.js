@@ -15,6 +15,25 @@ async function run() {
   const lineParse = await stream.pipe(csvParse);
 
   for await (const line of lineParse) {
-    console.log(line);
+    const { title, description } = line;
+
+    await fetch("http://localhost:3000/tasks", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        description,
+      }),
+    });
   }
+}
+
+run();
+
+function wait(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }
