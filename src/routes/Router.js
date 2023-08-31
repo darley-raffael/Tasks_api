@@ -1,14 +1,9 @@
-import { queryString } from "../utils/query_string.js";
-import { environment } from "../utils/constants.js";
-
-const { HOST, PORT } = environment;
+import { extractRouteParams } from "../utils/build-route-path.js";
 
 export class Router {
   #routes;
-  #middlewares;
   constructor() {
     this.#routes = [];
-    this.#middlewares = [];
   }
 
   /**
@@ -30,7 +25,7 @@ export class Router {
     for (const route of router.routes) {
       this.#routes.push({
         method: route.method,
-        path: path + route.path,
+        path: extractRouteParams(path.concat(`${route.path}?`)),
         handler: route.handler,
       });
     }
@@ -80,7 +75,7 @@ export class Router {
 
   /**
    * Adds a new route with a PUT method to the route table.
-   * @param {string} path - The path for the route.
+   * @param {string} put - The path for the route.
    * @param {function} handler - The handler function for the route.
    * @return {void} This function does not return a value.
    */
@@ -106,22 +101,37 @@ export class Router {
   }
 
   /**
+   * Finds and returns the route that matches the request method and URL path.
+   *
+   * @param {object} req - The request object.
+   * @param {object} res - The response object.
+   * @return {object} The matching route object, or undefined if no match is found.
+   */
+  async instanceRoutesServer(req, res) {
+    const { method, url } = req;
+
+    const route = this.#routes.find(
+      (route) =>
+        route.method === method &&
+        route.path.exec(url) &&
+        route.path.exec(url)[0] === url
+    );
+
+    return route;
+  }
+
+  /**
    * Handles the request and sends the appropriate response based on the route.
    *
    * @param {object} req - The request object.
    * @param {object} res - The response object.
    */
-  handleRequest(req, res) {
-    const reqUrl = new URL(req.url, `http://${HOST}:${PORT}`);
-    // Find the route
-    const route = this.#routes.find(
-      (route) =>
-        route.method === req.method &&
-        route.path.replace(/\/$/, "") === reqUrl.pathname
-    );
+  handleRequest(req, res, route) {
     if (route) {
+      console.log("Route valid");
       route.handler(req, res);
     } else {
+      console.log("Route not found");
       res.statusCode = 404;
       res.setHeader("Content-type", "application/json");
       res.end(JSON.stringify({ message: "Route not found" }));

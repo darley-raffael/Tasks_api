@@ -6,7 +6,8 @@ import querystring from "node:querystring";
  * @param {string} url - The URL containing the query string.
  * @return {object} An object with the normalized query parameters.
  */
-export function queryString(url) {
+export async function queryString(url) {
+  // Parse the query.
   const query = querystring.parse(url.split("?")[1]);
   const queryNormalized = Object.fromEntries(
     Object.entries(query).map(([key, value]) => [

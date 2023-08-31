@@ -6,5 +6,8 @@ const routerTasks = new Router();
 
 routerTasks.post("/", tasksController.create);
 routerTasks.get("/", tasksController.show);
+routerTasks.put("/:id", tasksController.update);
+routerTasks.delete("/:id", tasksController.delete);
+routerTasks.patch("/:id/complete", tasksController.updateStatus);
 
 export default routerTasks;
